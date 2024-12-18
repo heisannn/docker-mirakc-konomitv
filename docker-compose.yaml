@@ -1,0 +1,54 @@
+services:
+  mirakc:
+    image: mirakc/mirakc:alpine
+    container_name: mirakc
+    init: true
+    restart: unless-stopped
+    devices:
+      # チューナーコマンドで利用するデバイスファイルを列挙
+      - /dev/px4video0
+      - /dev/px4video1
+      - /dev/px4video2
+      - /dev/px4video3
+    ports:
+      - 40772:40772
+    volumes:
+      - mirakc-epg:/var/lib/mirakc/epg
+      - ./mirakc/config.yml:/etc/mirakc/config.yml:ro
+    environment:
+      TZ: Asia/Tokyo
+      RUST_LOG: info
+  b25:
+    build: ./mirakc/b25
+    container_name: b25
+    depends_on:
+      - bcas
+    init: true
+    restart: unless-stopped
+    ports:
+      - 40773:40773
+    environment:
+      BCAS_SERVER: bcas:40774
+      TZ: Asia/Tokyo
+  bcas:
+    build: ./mirakc/bcas
+    container_name: bcas
+    init: true
+    restart: unless-stopped
+    devices:
+      # ICカードリーダーを追加
+      - /dev/bus/usb
+    ports:
+      - 40774:40774
+    environment:
+      TZ: Asia/Tokyo
+  konomitv:
+    extends:
+      file: ./KonomiTV/docker-compose.yaml
+      service: konomitv
+
+volumes:
+  mirakc-epg:
+    name: mirakc_epg
+    driver: local
+

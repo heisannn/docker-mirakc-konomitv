@@ -1,0 +1,29 @@
+server:
+  addrs:
+    - http: '0.0.0.0:40772'
+
+tuners:
+  - name: GR0
+    types: [GR]
+    command: recpt1 --device /dev/px4video2 {{{channel}}} - -
+  - name: GR1
+    types: [GR]
+    command: recpt1 --device /dev/px4video3 {{{channel}}} - -
+  - name: BSCS0
+    types: [BS, CS]
+    command: recpt1 --device /dev/px4video0 {{{channel}}} - -
+  - name: BSCS1
+    types: [BS, CS]
+    command: recpt1 --device /dev/px4video1 {{{channel}}} - -
+
+epg:
+  cache-dir: /var/lib/mirakc/epg
+
+filters:
+  decode-filter:
+    # 標準入力から入力されるTSストリームをリモートホストtsdのTCP 40773ポートに転
+    # 送し，tsdから返されたTSストリームを標準出力に出力
+    #
+    # "Broken pipe"エラーを回避するため`cool-write`オプションを指定
+    command: >-
+      socat -,cool-write tcp-connect:b25:40773
