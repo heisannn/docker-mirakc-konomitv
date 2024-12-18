@@ -27,6 +27,7 @@ vim docker-compose.yaml
 ## チャンネルスキャン ([uru2/scan_ch_mirakc_docker.sh](https://gist.github.com/uru2/7f738d864c2789b35c35e6bb7be9d0cb))
 
 ```sh
+sudo apt install -y jq
 cd mirakc
 curl -sf https://gist.githubusercontent.com/uru2/7f738d864c2789b35c35e6bb7be9d0cb/raw/a113304cd4d30eacc154f88aa61704e5078521eb/scan_ch_mirakc_docker.sh | sh -s
 
